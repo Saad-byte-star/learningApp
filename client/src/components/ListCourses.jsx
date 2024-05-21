@@ -1,12 +1,13 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { Link, useParams , useLocation } from "react-router-dom";
+import { Link, useParams , useLocation , useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function ListCourses(){
   const { uid } = useParams();
   const [courses , setCourses ] = useState([]);
   const location = useLocation();
-  console.log(location);
+  const navigate = useNavigate();
+
 useEffect(() => {
   const fetchCourses = async () => {
     let url = `http://localhost:8000/api/courses`;
@@ -50,11 +51,9 @@ return (
               <Card.Body>
                 <Card.Title>{course.Title}</Card.Title>
                 <Card.Text>{course.Description}</Card.Text>
-                <Link>
-                <Button value={course._id} className="float-end rounded-0" variant="dark">
+                <Button onClick={()=>navigate(`/course/${course._id}`)} className="float-end rounded-0" variant="dark">
                   Enroll Now
                 </Button>
-                </Link>
               </Card.Body>
             </Card>
           </Col>
@@ -67,11 +66,9 @@ return (
               <Card.Body>
                 <Card.Title>{course.Title}</Card.Title>
                 <Card.Text>{course.Description}</Card.Text>
-                <Link>
-                <Button value={course._id} className="float-end rounded-0" variant="dark">
+                <Button onClick={()=>navigate(`/course/${course._id}`)} className="float-end rounded-0" variant="dark">
                   Enroll Now
                 </Button>
-                </Link>
               </Card.Body>
             </Card>
           </Col>
