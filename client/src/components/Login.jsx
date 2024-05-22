@@ -26,11 +26,6 @@ export default function Login({ setToken }) {
 
   async function handleLogIn() {
     try {
-      // const response = await axios.post(
-      //   `http://localhost:8000/api/users/login`,
-      //   logInfo,
-      //   { withCredentials: true } // this Ensures the Cookies are Sent with the Request
-      // );
       const response = await fetch(`http://localhost:8000/api/users/login`, {
       method: 'POST',
       headers: {
@@ -41,10 +36,6 @@ export default function Login({ setToken }) {
     });
 
       if (response.ok) {
-        // storeTokenInLocalStorage(response.data.token); OLD LINE
-        // console.log(response.data.token) OLD LINE
-        // return { user : loggedUser.data , token : response.data.token } ; OLD LINE
-        // return { user : loggedUser.data.user } ;
         const loginData = await response.json();
         const userResponse = await fetch(`http://localhost:8000/api/users/user`, {
           method: 'GET',
