@@ -41,18 +41,17 @@ const authenticate = async (logInfo) => {
   try {
     const response = await axios.post(
       `http://localhost:8000/api/users/login`,
-      logInfo
+      logInfo ,
+      { withCredentials: true } // this Ensures the Cookies are Sent with the Request
     );
 
     if (response.status === 200) {
-      storeTokenInLocalStorage(response.data.token);
-      // console.log(response.data.token)
-      const loggedUser = await axios.get(`${BASE_URL}/users/user`, {
-        headers: {
-          'Authorization': response.data.token,
-        },
-      });
-      return { user : loggedUser.data , token : response.data.token } ;
+      // storeTokenInLocalStorage(response.data.token); OLD LINE
+      // console.log(response.data.token) OLD LINE
+      const loggedUser = await axios.get(`${BASE_URL}/users/user`, { withCredentials : true });
+      // return { user : loggedUser.data , token : response.data.token } ; OLD LINE
+      return { user : loggedUser.data.user } ;
+
     } else {
       setErrors(response.message);
       return null;
