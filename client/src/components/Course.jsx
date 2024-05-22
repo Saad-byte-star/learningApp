@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { Container, Row, Col, Tabs, Tab } from "react-bootstrap";
+import { useContext, useEffect, useState } from "react";
+import { Button , Card , Container, Row, Col, Tabs, Tab } from "react-bootstrap";
 import { useLocation, useParams } from "react-router-dom";
+import { UserContext } from "../services/globals";
 
 export default function Course() {
   console.log("Reached Course");
@@ -8,6 +9,8 @@ export default function Course() {
   const [modules, setModules] = useState([]);
   const location = useLocation();
   const { cid } = useParams();
+  const [ course , setCourse ] = useState();
+  const { user, setUser } = useContext(UserContext);
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -24,9 +27,26 @@ export default function Course() {
         console.log(`Failed to fetch modules. Error: ${error}`);
       }
     };
+    const fetchCourse = async () => {
+      let url = `http://localhost:8000/api/courses/${cid}`;
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setCourse(data);
+        }
+      } catch (error) {
+        console.log(`Failed to fetch course with id ${cid}. Error: ${error}`);
+      }
+    };
+
 
     fetchModules();
+    fetchCourse();
   }, []);
+
 
   let courseModules = [];
   modules.map((module) => {
@@ -51,6 +71,42 @@ export default function Course() {
   function setkeyvalue(e) {
     setKey(e.eventKey);
   }
+
+const dropOut = async () => {
+  try {
+    console.log(course.EnrolledStudents);
+    let newEnrolled = [];
+    newEnrolled = course.EnrolledStudents.filter(student => student._id !== user._id);
+    console.log(newEnrolled);
+
+    const reqBody = { 
+      Title : course.Title,
+      Description : course.Description,
+      Instructor : course.Instructor,
+      EnrolledStudents : newEnrolled,
+      Modules : course.Modules
+    }
+
+    const response = await fetch(`http://localhost:8000/api/courses/${cid}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(reqBody),
+      credentials: 'include', // Ensure cookies are included with the request
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      // console.log(data)
+      navigate(`/enrolled/${user._id}`)
+    } else {
+      console.log('Unable to Dropout');
+    }
+  } catch (error) {
+    console.log('Unable to execute Dropout Functionality', error);
+  }
+}
 
   return (
     <>
@@ -82,8 +138,17 @@ export default function Course() {
             </div>
           </Container>
         </Col>
-        <Col>
-          
+        <Col className="pe-5 py-5">
+        { course != null && <Card className="rounded-0 m-0 w-100">
+              <Card.Img className="rounded-0" variant="top" src="/imgs/1.png" />
+              <Card.Body>
+                <Card.Title>{course.Title}</Card.Title> 
+                <Card.Text>{course.Description}</Card.Text>
+                <Button onClick={dropOut} className=" w-100 p-3 rounded-0" variant="outline-danger">
+                  Drop Out
+                </Button>
+              </Card.Body>
+            </Card> }
         </Col>
       </Row>
     </>

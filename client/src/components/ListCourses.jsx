@@ -1,5 +1,5 @@
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
-import { Link, useParams , useLocation , useNavigate } from "react-router-dom";
+import { useParams , useLocation , useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 export default function ListCourses(){
@@ -67,7 +67,7 @@ return (
                 <Card.Title>{course.Title}</Card.Title>
                 <Card.Text>{course.Description}</Card.Text>
                 <Button onClick={()=>navigate(`/course/${course._id}`)} className="float-end rounded-0" variant="dark">
-                  Enroll Now
+                  Resume
                 </Button>
               </Card.Body>
             </Card>
