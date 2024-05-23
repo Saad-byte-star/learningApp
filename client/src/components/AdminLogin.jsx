@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { Container, Row, Col, FloatingLabel, Form } from "react-bootstrap";
-import { authenticate } from "../services/Auth";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { UserContext } from "../services/globals";
 import { useContext, useEffect } from "react";
 
@@ -43,7 +41,7 @@ export default function Login() {
         });
         if (userResponse.ok) {
           const userData = await userResponse.json();
-          console.log("Logged In User:", userData);
+          console.log("Logged In Admin:", userData);
           setUser(userData);
         } else {
           console.log('error fetching user data')
@@ -58,12 +56,12 @@ export default function Login() {
 
   useEffect(() => {
     if (user && user._id) {
-      navigate(`/enrolled/${user._id}`);
+      navigate(`/dashboard`);
     }
   }, [user, navigate]);
 
-  const navigateToSignup = () => {
-    navigate(`/`);
+  const navigateToUserLogin = () => {
+    navigate(`/login`);
   };
 
   return (
@@ -77,7 +75,7 @@ export default function Login() {
             <Card className="shadow-lg" style={{ width: "500px" }}>
               <Card.Body className="px-5 py-5">
                 <center>
-                  <Card.Title className="fs-4 pb-3">Login</Card.Title>
+                  <Card.Title className="fs-4 pb-3">Admin Panel</Card.Title>
                 </center>
 
                 <FloatingLabel
@@ -109,16 +107,16 @@ export default function Login() {
                 <Button
                   onClick={handleLogIn}
                   className="btn-md rounded-0 py-2"
-                  variant="dark"
+                  variant="primary"
                 >
                   Log In
                 </Button>
                 <Button
-                  onClick={navigateToSignup}
+                  onClick={navigateToUserLogin}
                   className="btn-md rounded-0 py-2 ms-3"
                   variant="outline-secondary"
                 >
-                  Not Registerd? SignUp
+                  Login As User?
                 </Button>
               </Card.Body>
             </Card>

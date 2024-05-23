@@ -45,7 +45,9 @@
       <>
         <Navbar className="p-4" bg="dark" data-bs-theme="dark">
           <Container fluid>
-            <Navbar.Brand href="/home">Learning App</Navbar.Brand>
+            <Navbar.Brand href="/home">
+              Learning App
+            </Navbar.Brand>
             <Nav className="w-100">
               <Nav.Link className="ms-4" href="/home">Home</Nav.Link>
               <Nav.Link className="ms-4" onClick={viewEnrolled} >Enrolled Courses</Nav.Link>
