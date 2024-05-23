@@ -8,16 +8,16 @@ export default function MainLayout() {
     const navigate = useNavigate();
 
     const manageUsers = ()=> {
-        navigate('admin/users');
+        navigate('dashboard/users');
     }
     const manageCourses = ()=> {
-        navigate('admin/courses');
+        navigate('dashboard/courses');
     }
     const manageAssignment = ()=> {
-        navigate('admin/assignments');
+        navigate('dashboard/assignments');
     }
     const manageModules = ()=> {
-        navigate('admin/modules');
+        navigate('dashboard/modules');
     }
     return (
     <>
@@ -35,7 +35,6 @@ export default function MainLayout() {
             <Outlet/>
         </Col>
       </Row>
-      <Outlet/>
       <Footer />
     </>
   );

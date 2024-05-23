@@ -56,7 +56,7 @@ export default function Login() {
 
   useEffect(() => {
     if (user && user._id) {
-      navigate(`/dashboard`);
+      navigate(`/dashboard/users`);
     }
   }, [user, navigate]);
 

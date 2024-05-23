@@ -54,6 +54,7 @@ async function updateUser(req, res) {
   try {
     const userId = req.params.id;
     const { Name, Email, Password, Role } = req.body;
+    
     const updated = await User.findByIdAndUpdate(
       userId,
       { Name, Email, Password, Role },
