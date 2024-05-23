@@ -36,7 +36,7 @@ async function addModule(req, res) {
   try {
     const { Title , Content , Course , Assignments } = req.body;
     const module = await Module.create({ Title , Content , Course , Assignments });
-    res.header("location",`${req.originalUrl}/${priorty._id}`);
+    // res.header("location",`${req.originalUrl}/${priorty._id}`);
     return res.status(201).json(module);
   } catch (error) {
     console.error(error);
@@ -60,7 +60,7 @@ async function updateModule(req, res) {
 async function deleteModule(req, res) {
   try {
     const moduleId = req.params.id;
-    const deleted = await module.findByIdAndDelete(moduleId);
+    const deleted = await Module.findByIdAndDelete(moduleId);
     if (!deleted) return res.status(404).json({ message: `failed to delete module because it is not found` });
     return res.status(200).json(deleted);
   } catch (error) {

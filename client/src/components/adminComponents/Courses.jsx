@@ -6,14 +6,13 @@ import {
   Button,
   Container,
   Modal,
-  Form
+  Form,
 } from "react-bootstrap";
-
-
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
@@ -42,28 +41,28 @@ export default function Courses() {
       }
     };
     const fetchInstructors = async () => {
-        try {
-          const response = await fetch(`http://localhost:8000/api/users`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include", // Ensures cookies are sent with the request
-          });
-  
-          if (response.ok) {
-            const fetchedUsers = await response.json();
-            setInstructors(fetchedUsers);
-          } else {
-            console.log("error fetching instructors from the backend");
-          }
-        } catch (error) {
-          console.log("unable to fetch instructors", error);
+      try {
+        const response = await fetch(`http://localhost:8000/api/users`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // Ensures cookies are sent with the request
+        });
+
+        if (response.ok) {
+          const fetchedUsers = await response.json();
+          setInstructors(fetchedUsers);
+        } else {
+          console.log("error fetching instructors from the backend");
         }
-      };
-  
-      fetchCourses();
-      fetchInstructors();
+      } catch (error) {
+        console.log("unable to fetch instructors", error);
+      }
+    };
+
+    fetchCourses();
+    fetchInstructors();
   }, [courses]);
 
   const handleEditClick = (course) => {
@@ -82,22 +81,21 @@ export default function Courses() {
       Instructor: newInstructor, // Passing the entire instructor object
     };
 
+    //   const handleEditClick = (course) => {
+    //     setSelectedCourse(course);
+    //     setNewTitle(course.Title);
+    //     setNewDesc(course.Desc);
+    //     setNewInstructor(course.Instructor);
+    //     setShowModal(true);
+    //   };
 
-//   const handleEditClick = (course) => {
-//     setSelectedCourse(course);
-//     setNewTitle(course.Title);
-//     setNewDesc(course.Desc);
-//     setNewInstructor(course.Instructor);
-//     setShowModal(true);
-//   };
-
-//   const handleSaveChanges = async () => {
-//     const updatedCourse = {
-//       ...selectedCourse,
-//       Title: newTitle,
-//       Description: newDesc,
-//       Instructor: newInstructor,
-//     };
+    //   const handleSaveChanges = async () => {
+    //     const updatedCourse = {
+    //       ...selectedCourse,
+    //       Title: newTitle,
+    //       Description: newDesc,
+    //       Instructor: newInstructor,
+    //     };
     try {
       const response = await fetch(
         `http://localhost:8000/api/courses/${selectedCourse._id}`,
@@ -149,9 +147,57 @@ export default function Courses() {
     }
   };
 
+  const handleAddClick = () => {
+    setNewTitle("");
+    setNewDesc("");
+    setNewInstructor("");
+    setShowAddModal(true);
+  };
+
+  const handleAddCourse = async () => {
+    const newCourse = {
+      Title: newTitle,
+      Description: newDesc,
+      Instructor: newInstructor,
+      EnrolledStudents : [],
+      Modules : []
+    };
+
+    try {
+      const response = await fetch(`http://localhost:8000/api/courses`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(newCourse),
+      });
+
+      if (response.ok) {
+        const createdCourse = await response.json();
+        setCourses([...courses, createdCourse]);
+        setShowAddModal(false);
+      } else {
+        console.log("error adding course");
+      }
+    } catch (error) {
+      console.log("unable to add course", error);
+    }
+  };
+
   return (
     <>
       <Container fluid>
+        <Row className="pb-3 border-2 border-bottom">
+          <Col>
+            <h4>Manage Courses</h4>
+          </Col>
+          <Col className="col-2">
+            <Button variant="dark"  onClick={handleAddClick} className="rounded-0 w-100">
+              Add <strong>+</strong>
+            </Button>
+          </Col>
+        </Row>
         <Row>
           {courses.map((course) => (
             <Col key={course._id} className="col-4 my-3">
@@ -220,13 +266,18 @@ export default function Courses() {
                 as="select"
                 value={newInstructor?._id || ""}
                 onChange={(e) => {
-                  const selected = instructors.find(instructor => instructor._id === e.target.value);
+                  const selected = instructors.find(
+                    (instructor) => instructor._id === e.target.value
+                  );
                   setNewInstructor(selected);
                 }}
               >
                 <option value="">Select Instructor</option>
                 {instructors
-                  .filter(instructor => instructor.Role.toLowerCase() === "instructor")
+                  .filter(
+                    (instructor) =>
+                      instructor.Role.toLowerCase() === "instructor"
+                  )
                   .map((instructor) => (
                     <option key={instructor._id} value={instructor._id}>
                       {instructor.Name}
@@ -242,6 +293,58 @@ export default function Courses() {
           </Button>
           <Button variant="primary" onClick={handleSaveChanges}>
             Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      <Modal show={showAddModal} onHide={() => setShowAddModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add Course</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form>
+            <Form.Group controlId="addFormTitle">
+              <Form.Label>Title</Form.Label>
+              <Form.Control
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="addFormDescription">
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                type="text"
+                value={newDesc}
+                onChange={(e) => setNewDesc(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group controlId="addFormInstructor">
+              <Form.Label>Instructor</Form.Label>
+              <Form.Control
+                as="select"
+                value={newInstructor}
+                onChange={(e) => setNewInstructor(e.target.value)}
+              >
+                <option value="">Select Instructor</option>
+                {instructors
+                  .filter((instructor) =>
+                    instructor.Role.toLowerCase() === "instructor"
+                  )
+                  .map((instructor) => (
+                    <option key={instructor._id} value={instructor._id}>
+                      {instructor.Name}
+                    </option>
+                  ))}
+              </Form.Control>
+            </Form.Group>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowAddModal(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleAddCourse}>
+            Add Course
           </Button>
         </Modal.Footer>
       </Modal>

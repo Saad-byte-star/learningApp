@@ -101,6 +101,9 @@ export default function Users() {
   return (
     <>
       <Container fluid>
+        <Row className="pb-3 border-2 border-bottom">
+            <Col><h4>Manage Users</h4></Col>
+        </Row>
         <Row>
           {users.map((user) => (
             <Col key={user._id} className="col-4 my-3">

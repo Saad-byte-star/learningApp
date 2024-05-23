@@ -1,7 +1,7 @@
 export default function Assignments(){
     return(
         <>
-            <p>Assignments Dashboard</p>
+            <p>No Assignments Yet</p>
         </>
     )
 }
