@@ -65,7 +65,7 @@ async function updateCourse(req, res) {
 async function deleteCourse(req, res) {
   try {
     const courseId = req.params.id;
-    const deleted = await Task.findByIdAndDelete(courseId);
+    const deleted = await Course.findByIdAndDelete(courseId);
     if (!deleted) return res.status(404).json({ message: `failed to delete course because it is not found` });
     return res.status(200).json(deleted);
   } catch (error) {
