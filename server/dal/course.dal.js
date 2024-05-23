@@ -52,7 +52,7 @@ async function addCourse(req, res) {
 async function updateCourse(req, res) {
   try {
     const courseId = req.params.id;
-    const { Title, Description, Instructor, EnrolledStudents,Modules} = req.body;
+    const { Title, Description, Instructor, EnrolledStudents , Modules} = req.body;
     const updated = await Course.findByIdAndUpdate(courseId, { Title, Description, Instructor, EnrolledStudents,Modules }, { new: true });
     if (!updated) return res.status(404).json({ message: `failed to update Course because it is not found` });
     return res.status(200).json(updated);

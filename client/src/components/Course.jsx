@@ -4,7 +4,6 @@ import { useLocation, useParams } from "react-router-dom";
 import { UserContext } from "../services/globals";
 
 export default function Course() {
-  console.log("Reached Course");
   const [key, setKey] = useState("home");
   const [modules, setModules] = useState([]);
   const location = useLocation();
@@ -12,6 +11,7 @@ export default function Course() {
   const [ course , setCourse ] = useState();
   const { user, setUser } = useContext(UserContext);
 
+  
   useEffect(() => {
     const fetchModules = async () => {
       let url = `http://localhost:8000/api/modules`;
@@ -35,6 +35,7 @@ export default function Course() {
         });
         if (response.ok) {
           const data = await response.json();
+          // console.log(data);
           setCourse(data);
         }
       } catch (error) {
@@ -45,7 +46,7 @@ export default function Course() {
 
     fetchModules();
     fetchCourse();
-  }, []);
+  }, [course]);
 
 
   let courseModules = [];
@@ -66,24 +67,36 @@ export default function Course() {
     return 0;
 });
 
-  console.log(courseModules);
+  // console.log(courseModules);
 
   function setkeyvalue(e) {
     setKey(e.eventKey);
   }
 
-const dropOut = async () => {
+const dropOut = async (isEnroll) => {
   try {
     console.log(course.EnrolledStudents);
-    let newEnrolled = [];
-    newEnrolled = course.EnrolledStudents.filter(student => student._id !== user._id);
-    console.log(newEnrolled);
+    let newEnrolledIds = [];
+    if(isEnroll === true){
+      course.EnrolledStudents.forEach(enrolled => {
+        newEnrolledIds.push(enrolled._id);
+      })
+      newEnrolledIds.push(user._id);
+      console.log('Enrolled Students After Pushing User : ',newEnrolledIds);
+    }else {
+      course.EnrolledStudents.forEach(enrolled => {
+        if(enrolled._id != user._id){
+          newEnrolledIds.push(enrolled._id);
+        }
+      })
+      console.log('Enrolled Students After Dropping Out User : ',newEnrolledIds);
+    }
 
     const reqBody = { 
       Title : course.Title,
       Description : course.Description,
       Instructor : course.Instructor,
-      EnrolledStudents : newEnrolled,
+      EnrolledStudents : newEnrolledIds,
       Modules : course.Modules
     }
 
@@ -98,9 +111,10 @@ const dropOut = async () => {
 
     if (response.ok) {
       const data = await response.json();
-      // console.log(data)
-      navigate(`/enrolled/${user._id}`)
-    } else {
+      console.log(data);
+      window.location.reload();
+      // navigate(`/enrolled/${user._id}`)
+    } else {  
       console.log('Unable to Dropout');
     }
   } catch (error) {
@@ -108,6 +122,7 @@ const dropOut = async () => {
   }
 }
 
+const isUserEnrolled = course?.EnrolledStudents.some(enrolled => enrolled._id === user._id);
   return (
     <>
       <Row>
@@ -144,9 +159,16 @@ const dropOut = async () => {
               <Card.Body>
                 <Card.Title>{course.Title}</Card.Title> 
                 <Card.Text>{course.Description}</Card.Text>
-                <Button onClick={dropOut} className=" w-100 p-3 rounded-0" variant="outline-danger">
+                { isUserEnrolled
+                ?
+                <Button onClick={()=>dropOut(false)} className=" w-100 p-3 rounded-0" variant="outline-danger">
                   Drop Out
                 </Button>
+                :
+                <Button onClick={()=>dropOut(true)} className=" w-100 p-3 rounded-0" variant="outline-danger">
+                  Enroll
+                </Button>
+                 }
               </Card.Body>
             </Card> }
         </Col>

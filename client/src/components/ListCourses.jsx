@@ -8,6 +8,7 @@ export default function ListCourses(){
   const location = useLocation();
   const navigate = useNavigate();
 
+
 useEffect(() => {
   const fetchCourses = async () => {
     let url = `http://localhost:8000/api/courses`;
