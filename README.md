@@ -39,50 +39,55 @@ This application allows users to sign up, log in, and enroll in various courses.
 
 1. Clone the repository:
 
-    
+    ````
     git clone https://github.com/Saad-byte-star/learning-app.git
     cd learning-app
 
+    ````
 
 2. Install backend dependencies:
 
+````
     cd server
     npm install
     npm i express mongoose dotenv cors json-web-token cookie-parser
     npm i bcrypt@3.0.4-napi
 
+````
 
 4. Set up environment variables. Create a `.env` file in the `server` directory with the following contents:
 
+````
     MONGODB_URI=your_mongodb_uri
     JWT_SECRET=your_jwt_secret
     PORT=8000
-
+````
 
 5. Start the backend server:
-
+````
     npm start // make sure to add a start script before in package.json
-
+````
    IMPORTANT NOTE : U may use the initData Functions in the util.js file to initiliaze the data in the db.
 
 
 ### Frontend Setup
 
 1. Navigate to the `client` directory:
-
+````
     cd ../client
-
+````
 2. Install frontend dependencies:
 
-    
+    ````
     npm install
     npm i react react-router-dom react-bootstrap bootstrap axios 
 
+    ````
 4. Start the frontend development server:
 
-    
+   ```` 
     npm run dev // make sure to add a dev script in package.json before
-    
+   ```` 
 
 ## Usage
 
